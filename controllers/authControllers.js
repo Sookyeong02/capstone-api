@@ -48,6 +48,8 @@ export const signupCompany = async (req, res) => {
     password: hashed,
     companyName,
     businessNumber,
+    businessFileUrl,
+    status: "pending",
   });
 
   res
@@ -79,4 +81,51 @@ export const verifyToken = async (req, res) => {
   } catch {
     res.status(401).json({ message: "인증 실패" });
   }
+};
+
+// 대기 중인 기업 목록 조회
+export const getPendingCompanies = async (req, res) => {
+  const admin = await verifyTokenFromHeader(req);
+  if (admin.role !== "admin")
+    return res.status(403).json({ message: "권한이 없습니다." });
+
+  const pendingCompanies = await User.find({
+    role: "company",
+    status: "pending",
+  });
+  res.json(pendingCompanies);
+};
+
+// 기업 승인
+export const approveCompany = async (req, res) => {
+  const admin = await verifyTokenFromHeader(req);
+  if (admin.role !== "admin")
+    return res.status(403).json({ message: "권한이 없습니다." });
+
+  const company = await User.findById(req.params.id);
+  if (!company || company.role !== "company") {
+    return res.status(404).json({ message: "기업 사용자를 찾을 수 없습니다." });
+  }
+
+  company.status = "approved";
+  await company.save();
+
+  res.json({ message: "승인 완료" });
+};
+
+// 기업 거절
+export const rejectCompany = async (req, res) => {
+  const admin = await verifyTokenFromHeader(req);
+  if (admin.role !== "admin")
+    return res.status(403).json({ message: "권한이 없습니다." });
+
+  const company = await User.findById(req.params.id);
+  if (!company || company.role !== "company") {
+    return res.status(404).json({ message: "기업 사용자를 찾을 수 없습니다." });
+  }
+
+  company.status = "rejected";
+  await company.save();
+
+  res.json({ message: "거절 완료" });
 };

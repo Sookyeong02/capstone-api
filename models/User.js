@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema(
     companyName: String,
     businessNumber: String,
     businessFileUrl: String,
-    approved: { type: Boolean, default: false },
+    // approved: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
     companyIntroduction: String,
     companyWebsite: String,
   },
