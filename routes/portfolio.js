@@ -18,6 +18,11 @@ const router = express.Router();
  *           type: string
  *         description: 카테고리 필터
  *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: 제목, 태그, 콘텐츠 내용으로 검색
+ *       - in: query
  *         name: sort
  *         schema:
  *           type: string

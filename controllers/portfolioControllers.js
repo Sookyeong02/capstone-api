@@ -4,10 +4,21 @@ import { verifyTokenFromHeader } from "../utils/jwt.js";
 
 // 전체 조회
 export const getAll = async (req, res) => {
-  const { category, sort = "latest", page = 1, limit = 9 } = req.query;
+  const { category, sort = "latest", page = 1, limit = 9, search } = req.query;
 
-  const filter = category ? { category } : {};
+  // const filter = category ? { category } : {};
   const skip = (page - 1) * limit;
+
+  let filter = {};
+  if (category) filter.category = category;
+
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { tags: { $regex: search, $options: "i" } },
+      { "contentBlocks.content": { $regex: search, $options: "i" } },
+    ];
+  }
 
   const total = await Portfolio.countDocuments(filter);
   const totalPages = Math.ceil(total / limit);
