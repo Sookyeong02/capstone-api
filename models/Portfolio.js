@@ -1,30 +1,32 @@
 import mongoose from "mongoose";
 
+const contentBlockSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ["text", "image", "youtube", "code"], // 여기에 추가
+    required: true,
+  },
+  content: {
+    type: String, // 텍스트, 이미지 URL, 유튜브 링크, 코드 문자열 등
+    required: true,
+  },
+});
+
 const PortfolioSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
-      maxLength: 30,
-      // validate: {
-      //   validator: function (title) {
-      //     return title.split(" ").length > 1; // 최소 두 단어인지 확인
-      //   },
-      //   message: "Must contain at least 2 words.", // 밸리데이션 오류
-      // },
     },
-    description: {
-      type: String,
-    },
-    isComplete: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
+    title: { type: String, required: true },
+    category: String,
+    tags: [String],
+    contentBlocks: [contentBlockSchema], // 자유 블록 조합
+    thumbnail: String,
+    likesCount: { type: Number, default: 0 },
   },
-  {
-    timestamps: true, // createdAt, updatedAt를 자동으로 해줌
-  }
+  { timestamps: true } // createdAt, updatedAt를 자동으로 해줌
 );
 
 const Portfolio = mongoose.model("Portfolio", PortfolioSchema);
