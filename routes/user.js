@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /auth/me:
+ * /user/me:
  *   get:
  *     tags:
  *       - User
@@ -16,13 +16,22 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: 사용자 정보 반환
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
  */
 // 내 정보 확인 (JWT 인증 필요)
 router.get("/me", authController.verifyToken);
 
 /**
  * @swagger
- * /auth/me:
+ * /user/me:
  *   patch:
  *     tags:
  *       - User
@@ -73,7 +82,7 @@ router.get("/portfolios", userController.getMyPortfolios);
 
 /**
  * @swagger
- * /mypage/jobs:
+ * /user/jobs:
  *   get:
  *     tags:
  *       - User

@@ -65,6 +65,11 @@ export const login = async (req, res) => {
   if (!user)
     return res.status(401).json({ message: "존재하지 않는 사용자입니다." });
 
+  // 기업 계정인데 승인되지 않은 경우 로그인 거부
+  if (user.role === "company" && user.status !== "approved") {
+    return res.status(403).json({ message: "관리자의 승인이 필요합니다." });
+  }
+
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch)
     return res.status(401).json({ message: "비밀번호가 틀렸습니다." });
@@ -76,7 +81,8 @@ export const login = async (req, res) => {
 // 토큰 확인용
 export const verifyToken = async (req, res) => {
   try {
-    const user = await verifyTokenFromHeader(req);
+    const tokenData = await verifyTokenFromHeader(req); // id만 포함됨
+    const user = await User.findById(tokenData.id).select("-password"); // 전체 사용자 정보 반환
     res.json({ message: "인증 성공", user });
   } catch {
     res.status(401).json({ message: "인증 실패" });
@@ -85,9 +91,11 @@ export const verifyToken = async (req, res) => {
 
 // 대기 중인 기업 목록 조회
 export const getPendingCompanies = async (req, res) => {
-  const admin = await verifyTokenFromHeader(req);
-  if (admin.role !== "admin")
+  const tokenData = await verifyTokenFromHeader(req); // 토큰에서 id만 추출
+  const admin = await User.findById(tokenData.id); // DB에서 유저 정보 조회
+  if (!admin || admin.role !== "admin") {
     return res.status(403).json({ message: "권한이 없습니다." });
+  }
 
   const pendingCompanies = await User.find({
     role: "company",
@@ -98,9 +106,11 @@ export const getPendingCompanies = async (req, res) => {
 
 // 기업 승인
 export const approveCompany = async (req, res) => {
-  const admin = await verifyTokenFromHeader(req);
-  if (admin.role !== "admin")
+  const tokenData = await verifyTokenFromHeader(req); // 토큰에서 id만 추출
+  const admin = await User.findById(tokenData.id); // DB에서 유저 정보 조회
+  if (!admin || admin.role !== "admin") {
     return res.status(403).json({ message: "권한이 없습니다." });
+  }
 
   const company = await User.findById(req.params.id);
   if (!company || company.role !== "company") {
@@ -115,9 +125,11 @@ export const approveCompany = async (req, res) => {
 
 // 기업 거절
 export const rejectCompany = async (req, res) => {
-  const admin = await verifyTokenFromHeader(req);
-  if (admin.role !== "admin")
+  const tokenData = await verifyTokenFromHeader(req); // 토큰에서 id만 추출
+  const admin = await User.findById(tokenData.id); // DB에서 유저 정보 조회
+  if (!admin || admin.role !== "admin") {
     return res.status(403).json({ message: "권한이 없습니다." });
+  }
 
   const company = await User.findById(req.params.id);
   if (!company || company.role !== "company") {
