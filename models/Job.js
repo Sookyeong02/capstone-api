@@ -9,10 +9,11 @@ const jobSchema = new mongoose.Schema(
     },
     title: { type: String, required: true },
     category: String,
+    experience: String,
     content: String,
-    link: String, // 지원 링크
+    link: { type: String, required: true }, // 지원 링크
     deadline: Date, // 마감일
-    ocation: String, // 근무지
+    location: String, // 근무지
     thumbnail: String, // 썸네일 이미지 URL
   },
   { timestamps: true }

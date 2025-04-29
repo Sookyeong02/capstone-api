@@ -10,7 +10,7 @@ const router = express.Router();
  *   get:
  *     tags:
  *       - User
- *     summary: 내 정보 확인 (토큰 필요)
+ *     summary: 내 정보 확인
  *     security:
  *       - bearerAuth: []
  *     responses:
