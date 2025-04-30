@@ -1,23 +1,25 @@
-import AWS from "aws-sdk";
-import multer from "multer"; // multipart/form-data (파일 업로드) 처리를 위한 미들웨어
-import multerS3 from "multer-s3"; // multer가 S3와 직접 연동되도록 도와주는 어댑터
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import multer from "multer";
+import multerS3 from "multer-s3";
+import dotenv from "dotenv";
+dotenv.config();
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
-
-const s3 = new AWS.S3(); //  s3 객체를 생성
 
 const upload = multer({
   storage: multerS3({
     s3,
     bucket: process.env.S3_BUCKET_NAME,
-    acl: "public-read", // 업로드된 파일의 권한 설정
-    key: function (req, file, cb) {
-      const fileName = `${Date.now()}_${file.originalname}`; // 고유한 파일명 생성
-      cb(null, fileName); // S3에 저장할 키(파일명) 설정
+    acl: "public-read",
+    key: (req, file, cb) => {
+      const fileName = `${Date.now()}_${file.originalname}`;
+      cb(null, fileName);
     },
   }),
 });

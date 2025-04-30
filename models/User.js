@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     email: { type: String, required: true, unique: true },
-    password: String,
+    password: { type: String, required: true },
     provider: {
       type: String,
       enum: ["local", "google", "kakao"],
@@ -17,16 +17,16 @@ const userSchema = new mongoose.Schema(
     profileImage: String,
 
     // 개인 사용자 필드
-    name: String,
-    nickname: String,
+    name: { type: String, required: true },
+    nickname: { type: String, required: true },
     jobField: String, // 작업 분야 (디자인, 개발 등)
     introduction: String, // 자기소개
     personalWebsite: String, // 개인 홈페이지 링크
 
     // 기업 전용
-    companyName: String,
-    businessNumber: String,
-    businessFileUrl: String,
+    companyName: { type: String, required: true },
+    businessNumber: { type: String, required: true },
+    businessFileUrl: { type: String, required: true },
     // approved: { type: Boolean, default: false },
     status: {
       type: String,

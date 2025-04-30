@@ -15,6 +15,8 @@ const router = express.Router();
  *     tags:
  *       - Auth
  *     summary: 사업자등록증 이미지 업로드
+ *     consumes:
+ *       - multipart/form-data
  *     security: []
  *     requestBody:
  *       required: true
