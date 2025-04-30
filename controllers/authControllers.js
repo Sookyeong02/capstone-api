@@ -6,6 +6,10 @@ import { generateToken, verifyTokenFromHeader } from "../utils/jwt.js";
 export const signupPersonal = async (req, res) => {
   const { name, email, nickname, password, passwordConfirm } = req.body;
 
+  if (!name || !email || !nickname || !password || !passwordConfirm) {
+    return res.status(400).json({ message: "모든 필드를 입력해주세요." });
+  }
+
   if (password !== passwordConfirm)
     return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
 
@@ -31,6 +35,21 @@ export const signupPersonal = async (req, res) => {
 export const signupCompany = async (req, res) => {
   const { email, companyName, password, passwordConfirm, businessNumber } =
     req.body;
+
+  const businessFileUrl = req.file?.location;
+
+  if (
+    !email ||
+    !companyName ||
+    !password ||
+    !passwordConfirm ||
+    !businessNumber ||
+    !businessFileUrl
+  ) {
+    return res
+      .status(400)
+      .json({ message: "모든 필드를 입력해주세요.(파일 포함)" });
+  }
 
   if (password !== passwordConfirm)
     return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
