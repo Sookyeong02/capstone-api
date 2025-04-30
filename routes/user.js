@@ -31,11 +31,11 @@ router.get("/me", authController.verifyToken);
 
 /**
  * @swagger
- * /user/me:
+ * /user/me/personal:
  *   patch:
  *     tags:
  *       - User
- *     summary: 내 정보 수정
+ *     summary: 개인 사용자 정보 수정
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -45,12 +45,57 @@ router.get("/me", authController.verifyToken);
  *           schema:
  *             type: object
  *             properties:
+ *               name:
+ *                 type: string
  *               nickname:
  *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 description: 새로운 비밀번호
  *               introduction:
  *                 type: string
  *               personalWebsite:
  *                 type: string
+ *               profileImage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: 수정된 개인 사용자 정보 반환
+ */
+// (개인)내 정보 수정
+router.patch("/me/personal", userController.updatePersonalProfile);
+
+/**
+ * @swagger
+ * /user/me/company:
+ *   patch:
+ *     tags:
+ *       - User
+ *     summary: 기업 사용자 정보 수정
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               companyName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 description: 새로운 비밀번호
+ *               businessNumber:
+ *                 type: string
+ *                 description: 사업자등록번호 (회사명 변경 시 필수)
+ *               businessFileUrl:
+ *                 type: string
+ *                 description: 사업자등록증 파일 URL (회사명 변경 시 필수)
  *               companyIntroduction:
  *                 type: string
  *               companyWebsite:
@@ -59,10 +104,10 @@ router.get("/me", authController.verifyToken);
  *                 type: string
  *     responses:
  *       200:
- *         description: 수정된 사용자 정보 반환
+ *         description: 수정된 기업 사용자 정보 반환
  */
-// 내 정보 수정
-router.patch("/me", userController.updateProfile);
+// (기업)내 정보 수정
+router.patch("/me/company", userController.updateCompanyProfile);
 
 /**
  * @swagger

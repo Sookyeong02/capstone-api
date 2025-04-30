@@ -17,6 +17,12 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - nickname
+ *               - password
+ *               - passwordConfirm
  *             properties:
  *               name:
  *                 type: string
@@ -41,7 +47,7 @@ router.post("/signup/personal", authController.signupPersonal);
  *   post:
  *     tags:
  *       - Auth
- *     summary: 기업 회원가입
+ *     summary: 기업 회원가입 (운영자 승인 필요)
  *     security: []
  *     requestBody:
  *       required: true
@@ -49,20 +55,30 @@ router.post("/signup/personal", authController.signupPersonal);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - passwordConfirm
+ *               - companyName
+ *               - businessNumber
+ *               - businessFileUrl
  *             properties:
  *               email:
- *                 type: string
- *               companyName:
- *                 type: string
- *               businessNumber:
  *                 type: string
  *               password:
  *                 type: string
  *               passwordConfirm:
  *                 type: string
+ *               companyName:
+ *                 type: string
+ *               businessNumber:
+ *                 type: string
+ *               businessFileUrl:
+ *                 type: string
+ *                 format: uri
  *     responses:
  *       201:
- *         description: 기업 회원가입 성공
+ *         description: 기업 회원가입 성공 (승인 대기 상태)
  */
 // 기업 회원가입
 router.post("/signup/company", authController.signupCompany);

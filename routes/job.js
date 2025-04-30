@@ -66,10 +66,19 @@ router.get("/:id", jobController.getOne);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - title
+ *               - link
  *             properties:
  *               title:
  *                 type: string
- *               description:
+ *               category:
+ *                 type: string
+ *               experience:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               link:
  *                 type: string
  *               deadline:
  *                 type: string
@@ -82,6 +91,8 @@ router.get("/:id", jobController.getOne);
  *       201:
  *         description: 채용공고 등록 성공
  */
+
+// 채용 공고 등록
 router.post("/", jobController.create);
 
 /**
@@ -97,6 +108,7 @@ router.post("/", jobController.create);
  *       - in: path
  *         name: id
  *         required: true
+ *         description: 수정할 채용공고의 ID
  *         schema:
  *           type: string
  *     requestBody:
@@ -105,10 +117,30 @@ router.post("/", jobController.create);
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               experience:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               link:
+ *                 type: string
+ *               deadline:
+ *                 type: string
+ *                 format: date
+ *               location:
+ *                 type: string
+ *               thumbnail:
+ *                 type: string
  *     responses:
  *       200:
  *         description: 채용공고 수정 성공
  */
+
+// 채용 공고 수정
 router.patch("/:id", jobController.update);
 
 /**
