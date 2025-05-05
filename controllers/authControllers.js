@@ -93,8 +93,15 @@ export const login = async (req, res) => {
   if (!isMatch)
     return res.status(401).json({ message: "비밀번호가 틀렸습니다." });
 
-  const token = generateToken(user._id);
-  res.json({ message: "로그인 성공", token });
+  const accessToken = generateToken(user._id);
+  const refreshToken = generateToken(user._id, "14d");
+
+  res.json({
+    message: "로그인 성공",
+    user: safeUser,
+    accessToken,
+    refreshToken,
+  });
 };
 
 // 토큰 확인용
