@@ -96,9 +96,11 @@ export const login = async (req, res) => {
   const accessToken = generateToken(user._id);
   const refreshToken = generateToken(user._id, "14d");
 
+  const userWithoutPassword = await User.findById(user._id).select("-password");
+
   res.json({
     message: "로그인 성공",
-    user: safeUser,
+    user: userWithoutPassword,
     accessToken,
     refreshToken,
   });
