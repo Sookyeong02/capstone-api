@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
+import cors from "cors";
+
 dotenv.config();
 
 import { swaggerUi, swaggerSpec } from "./swagger.js";
@@ -12,6 +14,27 @@ import adminRoutes from "./routes/admin.js";
 import uploadRoutes from "./routes/upload.js";
 
 const app = express();
+
+const allowedOrigins = [
+  "http://localhost:3000", // 개발용
+  "https://buildfolio-2025.netlify.app", // 배포된 프론트 주소
+];
+
+// CORS 설정
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // origin이 없을 경우 (ex: 서버 간 요청)은 허용
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS 정책에 의해 차단된 요청입니다."));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.use("/auth", authRoutes);
