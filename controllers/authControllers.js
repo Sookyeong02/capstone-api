@@ -102,15 +102,15 @@ export const login = async (req, res) => {
   // 쿠키 설정
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    secure: false,
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 2, // 2시간
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    secure: false,
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
   });
 
