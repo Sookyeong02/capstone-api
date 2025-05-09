@@ -11,7 +11,7 @@ const router = express.Router();
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: 승인 대기 중인 기업 목록
@@ -32,7 +32,7 @@ router.get("/companies", authController.getPendingCompanies);
  *     tags:
  *     - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,7 +54,7 @@ router.patch("/companies/:id/approve", authController.approveCompany);
  *     tags:
  *       - Admin
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id

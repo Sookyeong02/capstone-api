@@ -5,6 +5,7 @@ import {
   uploadPortfolioImage,
   uploadJobImage,
 } from "../controllers/uploadControllers.js";
+import { verifyTokenFromHeader } from "../utils/jwt.js";
 
 const router = express.Router();
 
@@ -45,6 +46,8 @@ router.post("/business", upload.single("image"), (req, res) => {
  *     tags: [User]
  *     consumes:
  *       - multipart/form-data
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -58,7 +61,12 @@ router.post("/business", upload.single("image"), (req, res) => {
  *       200:
  *         description: 업로드 성공
  */
-router.post("/profile", upload.single("image"), uploadProfileImage);
+router.post(
+  "/profile",
+  verifyTokenFromHeader,
+  upload.single("image"),
+  uploadProfileImage
+);
 
 /**
  * @swagger
@@ -68,6 +76,8 @@ router.post("/profile", upload.single("image"), uploadProfileImage);
  *     tags: [Portfolios]
  *     consumes:
  *       - multipart/form-data
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -81,7 +91,12 @@ router.post("/profile", upload.single("image"), uploadProfileImage);
  *       200:
  *         description: 업로드 성공
  */
-router.post("/portfolio", upload.single("image"), uploadPortfolioImage);
+router.post(
+  "/portfolio",
+  verifyTokenFromHeader,
+  upload.single("image"),
+  uploadPortfolioImage
+);
 
 /**
  * @swagger
@@ -91,6 +106,8 @@ router.post("/portfolio", upload.single("image"), uploadPortfolioImage);
  *     tags: [Jobs]
  *     consumes:
  *       - multipart/form-data
+ *     security:
+ *       - cookieAuth: []
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -104,6 +121,11 @@ router.post("/portfolio", upload.single("image"), uploadPortfolioImage);
  *       200:
  *         description: 업로드 성공
  */
-router.post("/job", upload.single("image"), uploadJobImage);
+router.post(
+  "/job",
+  verifyTokenFromHeader,
+  upload.single("image"),
+  uploadJobImage
+);
 
 export default router;

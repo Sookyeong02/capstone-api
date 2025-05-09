@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -41,7 +42,8 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(cookieParser()); // 쿠키 파싱
+app.use(express.json()); // JSON 파싱
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);

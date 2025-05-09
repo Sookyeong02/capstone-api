@@ -59,7 +59,7 @@ router.get("/:id", jobController.getOne);
  *       - Jobs
  *     summary: 채용공고 등록
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -103,7 +103,7 @@ router.post("/", jobController.create);
  *       - Jobs
  *     summary: 채용공고 수정
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -151,7 +151,7 @@ router.patch("/:id", jobController.update);
  *       - Jobs
  *     summary: 채용공고 삭제
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id

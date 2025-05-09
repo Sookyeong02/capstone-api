@@ -12,7 +12,7 @@ const router = express.Router();
  *       - User
  *     summary: 내 정보 확인
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: 사용자 정보 반환
@@ -37,7 +37,7 @@ router.get("/me", authController.verifyToken);
  *       - User
  *     summary: 개인 사용자 정보 수정
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -75,7 +75,7 @@ router.patch("/me/personal", userController.updatePersonalProfile);
  *       - User
  *     summary: 기업 사용자 정보 수정
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -117,7 +117,7 @@ router.patch("/me/company", userController.updateCompanyProfile);
  *       - User
  *     summary: 내가 작성한 포트폴리오 목록 조회
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: 작성한 포트폴리오 목록 반환
@@ -133,7 +133,7 @@ router.get("/portfolios", userController.getMyPortfolios);
  *       - User
  *     summary: 내가 작성한 채용공고 목록 조회
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: 내가 등록한 채용공고 리스트

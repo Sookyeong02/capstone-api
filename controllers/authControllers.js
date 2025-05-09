@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateToken, verifyTokenFromHeader } from "../utils/jwt.js";
 
@@ -98,11 +99,25 @@ export const login = async (req, res) => {
 
   const userWithoutPassword = await User.findById(user._id).select("-password");
 
+  // 쿠키 설정
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 2, // 2시간
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
+  });
+
+  // accessToken, refreshToken은 JSON으로 안 보냄
   res.json({
     message: "로그인 성공",
     user: userWithoutPassword,
-    accessToken,
-    refreshToken,
   });
 };
 
@@ -114,6 +129,73 @@ export const verifyToken = async (req, res) => {
     res.json({ message: "인증 성공", user });
   } catch {
     res.status(401).json({ message: "인증 실패" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const token = req.cookies.accessToken; // 쿠키에서 accessToken 직접 읽기
+    if (!token) {
+      return res.status(401).json({ message: "토큰이 없습니다." });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // jwt로 복호화
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+    }
+
+    res.json({ user });
+  } catch (err) {
+    res.status(401).json({ message: "인증 실패", error: err.message });
+  }
+};
+
+// 로그아웃: 쿠키 삭제
+export const logout = (req, res) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+
+  res.json({ message: "로그아웃 되었습니다." });
+};
+
+// 리프레시 토큰을 이용해 accessToken 재발급
+export const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken)
+      return res.status(401).json({ message: "리프레시 토큰 없음" });
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) return res.status(401).json({ message: "유효하지 않은 사용자" });
+
+    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 2, // 2시간
+    });
+
+    res.json({ message: "토큰 재발급 완료" });
+  } catch (err) {
+    res
+      .status(401)
+      .json({ message: "리프레시 토큰이 유효하지 않음", error: err.message });
   }
 };
 

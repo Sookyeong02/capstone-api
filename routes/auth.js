@@ -109,4 +109,32 @@ router.post("/signup/company", authController.signupCompany);
 // 로그인
 router.post("/login", authController.login);
 
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     summary: 현재 로그인된 사용자 정보 반환
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: 인증된 사용자 정보
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: 인증 실패
+ */
+// 현재 로그인된 사용자 정보 반환
+router.get("/me", authController.getMe);
+
+router.post("/logout", authController.logout);
+router.post("/refresh", authController.refreshAccessToken);
+
 export default router;

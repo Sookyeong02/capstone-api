@@ -75,7 +75,7 @@ router.get("/:id", portfolioController.getOne);
  *       - Portfolios
  *     summary: 포트폴리오 등록
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -111,7 +111,7 @@ router.post("/", portfolioController.create);
  *       - Portfolios
  *     summary: 포트폴리오 수정
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -138,7 +138,7 @@ router.patch("/:id", portfolioController.update);
  *       - Portfolios
  *     summary: 포트폴리오 삭제
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -159,7 +159,7 @@ router.delete("/:id", portfolioController.remove);
  *       - Portfolios
  *     summary: 포트폴리오 좋아요 토글
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -199,7 +199,7 @@ router.get("/:id/likes", portfolioController.getLikeCount);
  *       - Portfolios
  *     summary: 내가 좋아요한 포트폴리오 목록
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: 좋아요한 포트폴리오 목록
