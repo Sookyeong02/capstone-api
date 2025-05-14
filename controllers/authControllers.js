@@ -34,10 +34,14 @@ export const signupPersonal = async (req, res) => {
 
 // 기업 회원가입
 export const signupCompany = async (req, res) => {
-  const { email, companyName, password, passwordConfirm, businessNumber } =
-    req.body;
-
-  const businessFileUrl = req.file?.location;
+  const {
+    email,
+    companyName,
+    password,
+    passwordConfirm,
+    businessNumber,
+    businessFileUrl,
+  } = req.body;
 
   if (
     !email ||
