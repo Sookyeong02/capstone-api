@@ -17,16 +17,41 @@ const userSchema = new mongoose.Schema(
     profileImage: String,
 
     // 개인 사용자 필드
-    name: { type: String, required: true },
-    nickname: { type: String, required: true },
+    name: {
+      type: String,
+      required: function () {
+        return this.role === "personal";
+      },
+    },
+    nickname: {
+      type: String,
+      required: function () {
+        return this.role === "personal";
+      },
+    },
     jobField: String, // 작업 분야 (디자인, 개발 등)
     introduction: String, // 자기소개
     personalWebsite: String, // 개인 홈페이지 링크
 
     // 기업 전용
-    companyName: { type: String, required: true },
-    businessNumber: { type: String, required: true },
-    businessFileUrl: { type: String, required: true },
+    companyName: {
+      type: String,
+      required: function () {
+        return this.role === "company";
+      },
+    },
+    businessNumber: {
+      type: String,
+      required: function () {
+        return this.role === "company";
+      },
+    },
+    businessFileUrl: {
+      type: String,
+      required: function () {
+        return this.role === "company";
+      },
+    },
     // approved: { type: Boolean, default: false },
     status: {
       type: String,

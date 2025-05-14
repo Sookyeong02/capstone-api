@@ -5,6 +5,8 @@ import { generateToken, verifyTokenFromHeader } from "../utils/jwt.js";
 
 // 개인 회원가입
 export const signupPersonal = async (req, res) => {
+  console.log("[signupPersonal] req.body:", req.body);
+
   const { name, email, nickname, password, passwordConfirm } = req.body;
 
   if (!name || !email || !nickname || !password || !passwordConfirm) {
