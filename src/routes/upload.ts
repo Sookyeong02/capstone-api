@@ -28,7 +28,7 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               image:
+ *               file:
  *                 type: string
  *                 format: binary
  *     responses:
