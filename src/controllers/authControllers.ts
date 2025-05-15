@@ -158,6 +158,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     const token = req.cookies.accessToken; // 쿠키에서 accessToken 직접 읽기
     if (!token) {
       res.status(401).json({ message: "토큰이 없습니다." });
+      return;
     }
 
     const decoded = jwt.verify(token, secret) as JwtPayload; // jwt로 복호화
@@ -165,6 +166,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
     if (!user) {
       res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+      return;
     }
 
     res.json({ user });
