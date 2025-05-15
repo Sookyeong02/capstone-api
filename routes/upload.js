@@ -33,7 +33,7 @@ const router = express.Router();
  *       200:
  *         description: 업로드된 파일 URL 반환
  */
-router.post("/business", upload.single("image"), (req, res) => {
+router.post("/business", upload.single("file"), (req, res) => {
   if (!req.file) return res.status(400).json({ message: "파일이 없습니다." });
   res.status(200).json({ url: req.file.location });
 });
