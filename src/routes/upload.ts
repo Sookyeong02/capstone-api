@@ -1,9 +1,11 @@
-import express, { Request, Response } from "express";
-import upload from "../utils/uploadPublic";
+import express from "express";
+import uploadPublic from "../utils/uploadPublic";
+import uploadPrivate from "../utils/uploadPrivate";
 import {
   uploadProfileImage,
   uploadPortfolioImage,
   uploadJobImage,
+  uploadBusinessFile,
 } from "../controllers/uploadControllers";
 import { verifyTokenFromHeader } from "../utils/jwt";
 
@@ -33,17 +35,7 @@ const router = express.Router();
  *       200:
  *         description: 업로드된 파일 URL 반환
  */
-router.post(
-  "/business",
-  upload.single("file"),
-  (req: Request, res: Response) => {
-    if (!req.file) {
-      res.status(400).json({ message: "파일이 없습니다." });
-      return;
-    }
-    res.status(200).json({ url: (req.file as any).location });
-  }
-);
+router.post("/business", uploadPrivate.single("file"), uploadBusinessFile);
 
 /**
  * @swagger
@@ -71,7 +63,7 @@ router.post(
 router.post(
   "/profile",
   verifyTokenFromHeader,
-  upload.single("image"),
+  uploadPublic.single("image"),
   uploadProfileImage
 );
 
@@ -101,7 +93,7 @@ router.post(
 router.post(
   "/portfolio",
   verifyTokenFromHeader,
-  upload.single("image"),
+  uploadPublic.single("image"),
   uploadPortfolioImage
 );
 
@@ -131,7 +123,7 @@ router.post(
 router.post(
   "/job",
   verifyTokenFromHeader,
-  upload.single("image"),
+  uploadPublic.single("image"),
   uploadJobImage
 );
 

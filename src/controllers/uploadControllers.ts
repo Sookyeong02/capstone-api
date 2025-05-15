@@ -8,6 +8,14 @@ interface MulterRequest extends Request {
   file?: MulterFile;
 }
 
+export const uploadBusinessFile = (req: Request, res: Response) => {
+  if (!req.file) {
+    res.status(400).json({ message: "파일이 없습니다." });
+    return;
+  }
+  res.status(200).json({ url: (req.file as any).location });
+};
+
 export const uploadProfileImage = (req: MulterRequest, res: Response) => {
   if (!req.file || !req.file.location) {
     res.status(400).json({ message: "이미지가 없습니다." });
