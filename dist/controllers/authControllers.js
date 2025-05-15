@@ -74,43 +74,49 @@ const signupCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.signupCompany = signupCompany;
 // 로그인
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    const user = yield User_1.default.findOne({ email });
-    if (!user) {
-        res.status(401).json({ message: "존재하지 않는 사용자입니다." });
-        return;
+    try {
+        const { email, password } = req.body;
+        const user = yield User_1.default.findOne({ email });
+        if (!user) {
+            res.status(401).json({ message: "존재하지 않는 사용자입니다." });
+            return;
+        }
+        // 기업 계정인데 승인되지 않은 경우 로그인 거부
+        if (user.role === "company" && user.status !== "approved") {
+            res.status(403).json({ message: "관리자의 승인이 필요합니다." });
+            return;
+        }
+        const isMatch = yield (0, password_1.comparePassword)(password, user.password);
+        if (!isMatch) {
+            res.status(401).json({ message: "비밀번호가 틀렸습니다." });
+            return;
+        }
+        const accessToken = (0, jwt_1.generateToken)(user._id);
+        const refreshToken = (0, jwt_1.generateToken)(user._id, "14d");
+        const userWithoutPassword = yield User_1.default.findById(user._id).select("-password");
+        // 쿠키 설정
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 2, // 2시간
+        });
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
+        });
+        // accessToken, refreshToken은 JSON으로 안 보냄
+        res.json({
+            message: "로그인 성공",
+            user: userWithoutPassword,
+        });
     }
-    // 기업 계정인데 승인되지 않은 경우 로그인 거부
-    if (user.role === "company" && user.status !== "approved") {
-        res.status(403).json({ message: "관리자의 승인이 필요합니다." });
-        return;
+    catch (err) {
+        console.error("[login error]", err);
+        res.status(500).json({ message: "서버 에러가 발생했습니다." });
     }
-    const isMatch = yield (0, password_1.comparePassword)(password, user.password);
-    if (!isMatch) {
-        res.status(401).json({ message: "비밀번호가 틀렸습니다." });
-        return;
-    }
-    const accessToken = (0, jwt_1.generateToken)(user._id);
-    const refreshToken = (0, jwt_1.generateToken)(user._id, "14d");
-    const userWithoutPassword = yield User_1.default.findById(user._id).select("-password");
-    // 쿠키 설정
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60 * 2, // 2시간
-    });
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
-    });
-    // accessToken, refreshToken은 JSON으로 안 보냄
-    res.json({
-        message: "로그인 성공",
-        user: userWithoutPassword,
-    });
 });
 exports.login = login;
 // 토큰 확인용

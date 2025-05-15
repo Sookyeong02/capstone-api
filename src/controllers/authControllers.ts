@@ -86,51 +86,58 @@ export const signupCompany = async (
 
 // 로그인
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    res.status(401).json({ message: "존재하지 않는 사용자입니다." });
-    return;
+    if (!user) {
+      res.status(401).json({ message: "존재하지 않는 사용자입니다." });
+      return;
+    }
+
+    // 기업 계정인데 승인되지 않은 경우 로그인 거부
+    if (user.role === "company" && user.status !== "approved") {
+      res.status(403).json({ message: "관리자의 승인이 필요합니다." });
+      return;
+    }
+
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+      res.status(401).json({ message: "비밀번호가 틀렸습니다." });
+      return;
+    }
+
+    const accessToken = generateToken(user._id);
+    const refreshToken = generateToken(user._id, "14d");
+
+    const userWithoutPassword = await User.findById(user._id).select(
+      "-password"
+    );
+
+    // 쿠키 설정
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 2, // 2시간
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
+    });
+
+    // accessToken, refreshToken은 JSON으로 안 보냄
+    res.json({
+      message: "로그인 성공",
+      user: userWithoutPassword,
+    });
+  } catch (err: any) {
+    console.error("[login error]", err);
+    res.status(500).json({ message: "서버 에러가 발생했습니다." });
   }
-
-  // 기업 계정인데 승인되지 않은 경우 로그인 거부
-  if (user.role === "company" && user.status !== "approved") {
-    res.status(403).json({ message: "관리자의 승인이 필요합니다." });
-    return;
-  }
-
-  const isMatch = await comparePassword(password, user.password);
-  if (!isMatch) {
-    res.status(401).json({ message: "비밀번호가 틀렸습니다." });
-    return;
-  }
-
-  const accessToken = generateToken(user._id);
-  const refreshToken = generateToken(user._id, "14d");
-
-  const userWithoutPassword = await User.findById(user._id).select("-password");
-
-  // 쿠키 설정
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 2, // 2시간
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
-  });
-
-  // accessToken, refreshToken은 JSON으로 안 보냄
-  res.json({
-    message: "로그인 성공",
-    user: userWithoutPassword,
-  });
 };
 
 // 토큰 확인용
