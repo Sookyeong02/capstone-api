@@ -118,14 +118,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 2, // 2시간
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 14, // 14일
     });
 
