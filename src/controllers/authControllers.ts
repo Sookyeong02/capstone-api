@@ -1,4 +1,6 @@
 import User from "../models/User";
+import Portfolio from "../models/Portfolio";
+import Like from "../models/Like";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { hashPassword, comparePassword } from "../utils/password";
 import { generateToken, verifyToken } from "../utils/jwt";
@@ -169,7 +171,34 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    res.json({ user });
+    const userResponse: any = user.toObject();
+
+    // 개인 사용자만 포트폴리오/좋아요 정보 포함
+    if (user.role === "personal") {
+      // 포트폴리오 개수
+      const portfoliosCount = await Portfolio.countDocuments({
+        userId: user._id,
+      });
+
+      // 좋아요 받은 수 (내 포트폴리오에 달린 좋아요 수)
+      const myPortfolioIds = await Portfolio.find({ userId: user._id }).select(
+        "_id"
+      );
+      const portfolioIds = myPortfolioIds.map((p) => p._id);
+      const likesReceived = await Like.countDocuments({
+        portfolioId: { $in: portfolioIds },
+      });
+
+      // 내가 누른 좋아요 수
+      const likesGiven = await Like.countDocuments({ userId: user._id });
+
+      // 응답에 추가
+      userResponse.portfoliosCount = portfoliosCount;
+      userResponse.likesReceived = likesReceived;
+      userResponse.likesGiven = likesGiven;
+    }
+
+    res.json({ user: userResponse });
   } catch (err: any) {
     res.status(401).json({ message: "인증 실패", error: err.message });
   }
