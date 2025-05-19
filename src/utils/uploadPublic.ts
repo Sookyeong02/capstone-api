@@ -13,7 +13,6 @@ const uploadPublic = multer({
   storage: multerS3({
     s3: s3 as S3Client,
     bucket: bucketName,
-    acl: "public-read",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (
       req: Request,
