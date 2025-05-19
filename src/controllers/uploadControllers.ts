@@ -17,6 +17,8 @@ export const uploadBusinessFile = (req: Request, res: Response) => {
 };
 
 export const uploadProfileImage = (req: MulterRequest, res: Response) => {
+  console.log("[upload] req.file:", req.file); // 확인용
+
   if (!req.file || !req.file.location) {
     res.status(400).json({ message: "이미지가 없습니다." });
     return;
