@@ -173,6 +173,8 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 
     const userResponse: any = user.toObject();
 
+    userResponse.profileImageUrl = user.profileImage;
+
     // 개인 사용자만 포트폴리오/좋아요 정보 포함
     if (user.role === "personal") {
       // 포트폴리오 개수
@@ -196,7 +198,6 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       userResponse.portfoliosCount = portfoliosCount;
       userResponse.likesReceived = likesReceived;
       userResponse.likesGiven = likesGiven;
-      userResponse.profileImageUrl = user.profileImage;
     }
 
     res.json({ user: userResponse });
