@@ -196,6 +196,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       userResponse.portfoliosCount = portfoliosCount;
       userResponse.likesReceived = likesReceived;
       userResponse.likesGiven = likesGiven;
+      userResponse.profileImageUrl = user.profileImage;
     }
 
     res.json({ user: userResponse });
