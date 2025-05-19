@@ -22,6 +22,9 @@ const uploadPublic = multer({
     ) => {
       const folder = String(req.query.folder || "public");
       const fileName = `${Date.now()}_${file.originalname}`;
+
+      console.log("[key]", folder, fileName); // 확인용
+
       cb(null, `${folder}/${fileName}`);
     },
   }),
