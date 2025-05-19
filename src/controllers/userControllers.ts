@@ -78,11 +78,13 @@ export const updateCompanyProfile = async (
       profileImage,
     } = req.body;
 
-    // if (companyName) user.companyName = companyName;
-    if (companyName && companyName !== user.companyName) {
-      user.companyName = companyName;
-      user.status = "pending"; // 승인 다시 받도록
-    }
+    const isBusinessInfoUpdated =
+      businessNumber &&
+      businessFileUrl &&
+      (businessNumber !== user.businessNumber ||
+        businessFileUrl !== user.businessFileUrl);
+
+    if (companyName) user.companyName = companyName;
     if (email) user.email = email;
     if (password) user.password = await hashPassword(password);
     if (businessNumber) user.businessNumber = businessNumber;
@@ -90,6 +92,13 @@ export const updateCompanyProfile = async (
     if (companyIntroduction) user.companyIntroduction = companyIntroduction;
     if (companyWebsite) user.companyWebsite = companyWebsite;
     if (profileImage) user.profileImage = profileImage;
+
+    // 사업자번호 또는 파일이 둘 다 수정되었을 경우에만 업데이트 및 상태 변경
+    if (isBusinessInfoUpdated) {
+      user.businessNumber = businessNumber;
+      user.businessFileUrl = businessFileUrl;
+      user.status = "pending";
+    }
 
     await user.save();
 
