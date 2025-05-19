@@ -20,7 +20,7 @@ const uploadPublic = multer({
       file: Express.Multer.File,
       cb: (error: any, key?: string) => void
     ) => {
-      const folder = req.query.folder || "public";
+      const folder = String(req.query.folder || "public");
       const fileName = `${Date.now()}_${file.originalname}`;
       cb(null, `${folder}/${fileName}`);
     },
