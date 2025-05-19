@@ -27,6 +27,7 @@ export const updatePersonalProfile = async (
       introduction,
       personalWebsite,
       profileImage,
+      jobField,
     } = req.body;
 
     if (name) user.name = name;
@@ -36,6 +37,7 @@ export const updatePersonalProfile = async (
     if (introduction) user.introduction = introduction;
     if (personalWebsite) user.personalWebsite = personalWebsite;
     if (profileImage) user.profileImage = profileImage;
+    if (jobField) user.jobField = jobField;
 
     await user.save();
 
@@ -45,6 +47,7 @@ export const updatePersonalProfile = async (
       name: user.name,
       nickname: user.nickname,
       profileImageUrl: user.profileImage || "",
+      jobField: user.jobField || "",
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });
