@@ -8,6 +8,7 @@ export interface Job extends Document {
   content?: string;
   link: string;
   deadline?: Date;
+  isDeadlineFlexible?: boolean;
   location?: string;
   thumbnail?: string;
   createdAt?: Date;
@@ -27,6 +28,7 @@ const jobSchema = new Schema<Job>(
     content: { type: String },
     link: { type: String, required: true },
     deadline: { type: Date },
+    isDeadlineFlexible: { type: Boolean, default: false },
     location: { type: String },
     thumbnail: { type: String },
   },

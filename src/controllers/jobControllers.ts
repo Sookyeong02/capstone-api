@@ -35,10 +35,36 @@ export const getOne = async (req: Request, res: Response): Promise<void> => {
 // 등록
 export const create = async (req: Request, res: Response) => {
   const tokenData = await verifyToken(req);
-  const newJob = await Job.create({
-    ...req.body,
-    companyId: tokenData.id, // 기업 사용자 ID 저장
-  });
+  const {
+    title,
+    category,
+    experience,
+    content,
+    link,
+    deadline,
+    isDeadlineFlexible,
+    location,
+    thumbnail,
+  } = req.body;
+
+  const jobData = {
+    title,
+    category,
+    experience,
+    content,
+    link,
+    location,
+    thumbnail,
+    companyId: tokenData.id,
+    isDeadlineFlexible:
+      isDeadlineFlexible === true || isDeadlineFlexible === "true",
+    deadline:
+      isDeadlineFlexible === true || isDeadlineFlexible === "true"
+        ? null
+        : new Date(deadline),
+  };
+
+  const newJob = await Job.create(jobData);
   res.status(201).json(newJob);
 };
 
