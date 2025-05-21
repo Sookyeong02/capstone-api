@@ -5,8 +5,9 @@ import { Request, Response } from "express";
 // 전체 조회
 export const getAll = async (req: Request, res: Response) => {
   const page = parseInt(String(req.query.page)) || 1;
-  const limit = parseInt(String(req.query.limit)) || 10;
+  const limit = parseInt(String(req.query.limit)) || 12;
   const skip = (page - 1) * limit;
+  const category = req.query.category;
 
   const total = await Job.countDocuments();
   const totalPages = Math.ceil(total / limit);
