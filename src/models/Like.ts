@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { applyToJSONTransform } from "../toJSONTransform";
 
 export interface Like extends Document {
   userId: mongoose.Types.ObjectId;
@@ -24,6 +25,8 @@ const likeSchema = new Schema<Like>(
 );
 
 likeSchema.index({ userId: 1, portfolioId: 1 }, { unique: true });
+
+applyToJSONTransform(likeSchema);
 
 const Like = mongoose.model<Like>("Like", likeSchema);
 export default Like;

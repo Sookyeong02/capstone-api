@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { applyToJSONTransform } from "../toJSONTransform";
 
 interface CommonUser {
   role: "personal" | "company" | "admin";
@@ -97,6 +98,8 @@ const userSchema = new Schema<User>(
   },
   { timestamps: true }
 );
+
+applyToJSONTransform(userSchema);
 
 const User = mongoose.model<User>("User", userSchema);
 export default User;

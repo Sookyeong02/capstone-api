@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+import { applyToJSONTransform } from "../toJSONTransform";
 
 export type ContentBlockType = "text" | "image" | "youtube" | "code";
 
@@ -47,6 +48,8 @@ const portfolioSchema = new Schema<Portfolio>(
   },
   { timestamps: true }
 );
+
+applyToJSONTransform(portfolioSchema);
 
 const Portfolio = mongoose.model<Portfolio>("Portfolio", portfolioSchema);
 export default Portfolio;

@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { applyToJSONTransform } from "../toJSONTransform";
 
 export interface Job extends Document {
   companyId: mongoose.Types.ObjectId;
@@ -34,6 +35,8 @@ const jobSchema = new Schema<Job>(
   },
   { timestamps: true }
 );
+
+applyToJSONTransform(jobSchema);
 
 const Job = mongoose.model<Job>("Job", jobSchema);
 export default Job;
