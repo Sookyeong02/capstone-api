@@ -67,6 +67,9 @@ router.get("/", portfolioController.getAll);
  */
 router.get("/:id", portfolioController.getOne);
 
+// 특정 유저의 포트폴리오 공개 조회
+router.get("/user/:userId", portfolioController.getPublicPortfoliosByUserId);
+
 /**
  * @swagger
  * /portfolios:

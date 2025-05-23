@@ -77,6 +77,22 @@ export const getOne = async (req: Request, res: Response): Promise<void> => {
   res.json(portfolio);
 };
 
+// 공개용 특정 포트폴리오 조회
+export const getPublicPortfoliosByUserId = async (
+  req: Request,
+  res: Response
+) => {
+  const { userId } = req.params;
+
+  try {
+    const portfolios = await Portfolio.find({ userId }).sort({ createdAt: -1 });
+
+    res.json(portfolios);
+  } catch (err) {
+    res.status(500).json({ message: "포트폴리오 조회 실패", error: err });
+  }
+};
+
 // 등록
 export const create = async (req: Request, res: Response) => {
   const tokenData = await verifyToken(req);
