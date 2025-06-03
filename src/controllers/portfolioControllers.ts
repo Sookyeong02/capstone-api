@@ -19,7 +19,7 @@ export interface PortfolioResponse {
 
 // 전체 조회
 export const getAll = async (req: Request, res: Response) => {
-  const { category, sort = "latest", page = 1, limit = 9, search } = req.query;
+  const { category, sort = "latest", page = 1, limit = 12, search } = req.query;
 
   const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
 

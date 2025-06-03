@@ -38,7 +38,7 @@ const router = express.Router();
  *         name: limit
  *         schema:
  *           type: integer
- *           default: 9
+ *           default: 12
  *         description: 페이지당 항목 수
  *     responses:
  *       200:
