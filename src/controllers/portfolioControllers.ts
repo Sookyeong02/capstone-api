@@ -96,9 +96,15 @@ export const getPublicPortfoliosByUserId = async (
 // 등록
 export const create = async (req: Request, res: Response) => {
   const tokenData = await verifyToken(req);
+
+  const firstImageBlock = req.body.contentBlocks?.find(
+    (block: any) => block.type === "image"
+  );
+
   const newPortfolio = await Portfolio.create({
     ...req.body,
     userId: tokenData.id,
+    thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
   });
   res.status(201).json(newPortfolio);
 };
