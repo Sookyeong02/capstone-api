@@ -129,15 +129,16 @@ export const create = async (req: Request, res: Response) => {
       thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
     });
 
-    const populated = await newPortfolio.populate("userId", "nickname");
+    const populated = await newPortfolio.populate("userId", "_id nickname");
 
     const portfolioWithNickname = populated.toJSON() as {
-      userId: { nickname: string };
+      userId: { id: string; nickname: string };
       [key: string]: any;
     };
 
     res.status(201).json({
       ...portfolioWithNickname,
+      userId: portfolioWithNickname.userId.id,
       nickname: portfolioWithNickname.userId.nickname,
     });
   } catch (error) {
