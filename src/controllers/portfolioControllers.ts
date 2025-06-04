@@ -42,6 +42,7 @@ export const getAll = async (req: Request, res: Response) => {
     .sort(sort === "likes" ? {} : { createdAt: -1 })
     .skip(Number(skip))
     .limit(Number(limit))
+    .populate("userId", "nickname")
     .lean<PortfolioResponse[]>();
 
   if (sort === "likes") {
@@ -58,6 +59,11 @@ export const getAll = async (req: Request, res: Response) => {
 
     portfolios.sort((a, b) => b.likeCount - a.likeCount);
   }
+
+  portfolios = portfolios.map((p: any) => ({
+    ...p,
+    nickname: p.userId?.nickname || null,
+  }));
 
   res.json({
     total,
