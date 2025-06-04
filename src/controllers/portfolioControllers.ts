@@ -94,19 +94,52 @@ export const getPublicPortfoliosByUserId = async (
 };
 
 // 등록
+// export const create = async (req: Request, res: Response) => {
+//   const tokenData = await verifyToken(req);
+
+//   const firstImageBlock = req.body.contentBlocks?.find(
+//     (block: any) => block.type === "image"
+//   );
+
+//   const newPortfolio = await Portfolio.create({
+//     ...req.body,
+//     userId: tokenData.id,
+//     thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
+//   });
+
+//   res.status(201).json(newPortfolio);
+// };
 export const create = async (req: Request, res: Response) => {
-  const tokenData = await verifyToken(req);
+  try {
+    const tokenData = await verifyToken(req);
 
-  const firstImageBlock = req.body.contentBlocks?.find(
-    (block: any) => block.type === "image"
-  );
+    const firstImageBlock = req.body.contentBlocks?.find(
+      (block: any) => block.type === "image"
+    );
 
-  const newPortfolio = await Portfolio.create({
-    ...req.body,
-    userId: tokenData.id,
-    thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
-  });
-  res.status(201).json(newPortfolio);
+    const newPortfolio = await Portfolio.create({
+      ...req.body,
+      userId: tokenData.id,
+      thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
+    });
+
+    const populated = await newPortfolio.populate("userId", "nickname");
+
+    const portfolioWithNickname = populated.toJSON() as {
+      userId: { nickname: string };
+      [key: string]: any;
+    };
+
+    res.status(201).json({
+      ...portfolioWithNickname,
+      nickname: portfolioWithNickname.userId.nickname,
+    });
+  } catch (error) {
+    console.error("포트폴리오 생성 실패:", error);
+    res
+      .status(500)
+      .json({ message: "포트폴리오 생성 중 오류가 발생했습니다." });
+  }
 };
 
 // 수정
