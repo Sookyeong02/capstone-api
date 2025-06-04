@@ -77,10 +77,29 @@ export const getAll = async (req: Request, res: Response) => {
 
 // 상세 조회
 export const getOne = async (req: Request, res: Response): Promise<void> => {
-  const portfolio = await Portfolio.findById(req.params.id);
-  if (!portfolio)
-    res.status(404).json({ message: "포트폴리오를 찾을 수 없습니다." });
-  res.json(portfolio);
+  try {
+    const portfolio = await Portfolio.findById(req.params.id)
+      .populate("userId", "_id nickname profileImageUrl")
+      .lean();
+
+    if (!portfolio) {
+      res.status(404).json({ message: "포트폴리오를 찾을 수 없습니다." });
+      return;
+    }
+
+    const { userId, ...rest } = portfolio;
+    const user = userId as any;
+
+    res.json({
+      ...rest,
+      userId: user._id,
+      nickname: user.nickname,
+      profileImageUrl: user.profileImageUrl,
+    });
+  } catch (err) {
+    console.error("포트폴리오 상세 조회 오류:", err);
+    res.status(500).json({ message: "서버 오류" });
+  }
 };
 
 // 공개용 특정 포트폴리오 조회
@@ -100,21 +119,6 @@ export const getPublicPortfoliosByUserId = async (
 };
 
 // 등록
-// export const create = async (req: Request, res: Response) => {
-//   const tokenData = await verifyToken(req);
-
-//   const firstImageBlock = req.body.contentBlocks?.find(
-//     (block: any) => block.type === "image"
-//   );
-
-//   const newPortfolio = await Portfolio.create({
-//     ...req.body,
-//     userId: tokenData.id,
-//     thumbnail: req.body.thumbnail || firstImageBlock?.content || null,
-//   });
-
-//   res.status(201).json(newPortfolio);
-// };
 export const create = async (req: Request, res: Response) => {
   try {
     const tokenData = await verifyToken(req);
