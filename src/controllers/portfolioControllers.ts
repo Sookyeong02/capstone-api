@@ -113,9 +113,19 @@ export const getPublicPortfoliosByUserId = async (
   const { userId } = req.params;
 
   try {
-    const portfolios = await Portfolio.find({ userId }).sort({ createdAt: -1 });
+    const portfolios = await Portfolio.find({ userId })
+      .sort({ createdAt: -1 })
+      .populate("userId", "nickname");
 
-    res.json(portfolios);
+    const mapped = portfolios.map((p) => ({
+      id: p._id,
+      title: p.title,
+      thumbnail: p.thumbnail,
+      likesCount: p.likesCount,
+      nickname: (p.userId as any).nickname,
+    }));
+
+    res.json(mapped);
   } catch (err) {
     res.status(500).json({ message: "포트폴리오 조회 실패", error: err });
   }
