@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Portfolio from "../models/Portfolio";
 import User from "../models/User";
+import Notification from "../models/Notification";
 import { verifyToken } from "../utils/jwt";
 import nodemailer from "nodemailer";
 
@@ -59,6 +60,11 @@ export const sendHireRequestByPortfolioId = async (
       text: emailText,
     });
 
+    await Notification.create({
+      userId: targetUser._id,
+      message: `'${company.companyName}'에서 채용 제안을 발송했습니다.`,
+    });
+
     res.json({ message: "채용 제안 이메일이 성공적으로 전송되었습니다." });
   } catch (err: any) {
     console.error("채용 제안 이메일 전송 실패:", err);
@@ -85,6 +91,11 @@ export const sendHireRequestByUserId = async (
       res.status(404).json({ message: "개인 사용자를 찾을 수 없습니다." });
       return;
     }
+
+    await Notification.create({
+      userId: targetUser._id,
+      message: `'${company.companyName}'에서 채용 제안을 발송했습니다.`,
+    });
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

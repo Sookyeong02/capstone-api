@@ -14,6 +14,7 @@ import jobRoutes from "./routes/job";
 import adminRoutes from "./routes/admin";
 import uploadRoutes from "./routes/upload";
 import hireRoutes from "./routes/hire";
+import notificationRoutes from "./routes/notification";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/jobs", jobRoutes);
 app.use("/admin", adminRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/hire", hireRoutes);
+app.use("/notifications", notificationRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
