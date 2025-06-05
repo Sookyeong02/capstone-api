@@ -13,6 +13,7 @@ import portfolioRoutes from "./routes/portfolio";
 import jobRoutes from "./routes/job";
 import adminRoutes from "./routes/admin";
 import uploadRoutes from "./routes/upload";
+import hireRoutes from "./routes/hire";
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/portfolios", portfolioRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/admin", adminRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/hire", hireRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
