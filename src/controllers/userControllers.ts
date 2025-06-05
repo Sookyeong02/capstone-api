@@ -163,11 +163,13 @@ export const getUserPublicInfoById = async (
 
     const portfoliosCount = await Portfolio.countDocuments({ userId: id });
 
-    const likesReceivedAgg = await Portfolio.aggregate([
-      { $match: { userId: user._id } },
-      { $group: { _id: null, total: { $sum: "$likesCount" } } },
-    ]);
-    const likesReceived = likesReceivedAgg[0]?.total || 0;
+    const myPortfolioIds = await Portfolio.find({ userId: user._id }).select(
+      "_id"
+    );
+    const portfolioIds = myPortfolioIds.map((p) => p._id);
+    const likesReceived = await Like.countDocuments({
+      portfolioId: { $in: portfolioIds },
+    });
 
     const likesGiven = await Like.countDocuments({ userId: user._id });
 
