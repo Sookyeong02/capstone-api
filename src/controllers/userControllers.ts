@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import Job from "../models/Job";
 import Portfolio from "../models/Portfolio";
+import Like from "../models/Like";
 import { verifyToken, JwtPayload } from "../utils/jwt";
 import { hashPassword } from "../utils/password";
 
@@ -142,5 +143,48 @@ export const getMyJobs = async (req: Request, res: Response) => {
     res.json(jobs);
   } catch (error: any) {
     res.status(401).json({ message: "인증 실패", error: error.message });
+  }
+};
+
+// 공개용 내 정보
+export const getUserPublicInfoById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).lean();
+
+    if (!user || user.role !== "personal") {
+      res.status(404).json({ message: "개인 사용자 정보를 찾을 수 없습니다." });
+      return;
+    }
+
+    const portfoliosCount = await Portfolio.countDocuments({ userId: id });
+
+    const likesReceivedAgg = await Portfolio.aggregate([
+      { $match: { userId: user._id } },
+      { $group: { _id: null, total: { $sum: "$likesCount" } } },
+    ]);
+    const likesReceived = likesReceivedAgg[0]?.total || 0;
+
+    const likesGiven = await Like.countDocuments({ userId: user._id });
+
+    const publicUserInfo = {
+      id: user._id,
+      nickname: user.nickname,
+      profileImageUrl: user.profileImage,
+      introduction: user.introduction,
+      jobField: user.jobField,
+      personalWebsite: user.personalWebsite,
+      portfoliosCount,
+      likesReceived,
+      likesGiven,
+    };
+
+    res.json(publicUserInfo);
+  } catch (err) {
+    res.status(500).json({ message: "사용자 정보 조회 실패", error: err });
   }
 };

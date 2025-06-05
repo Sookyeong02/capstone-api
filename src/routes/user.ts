@@ -140,4 +140,7 @@ router.get("/portfolios", userController.getMyPortfolios);
  */
 router.get("/jobs", userController.getMyJobs);
 
+// 공개용 내 정보
+router.get("/:id", userController.getUserPublicInfoById);
+
 export default router;
