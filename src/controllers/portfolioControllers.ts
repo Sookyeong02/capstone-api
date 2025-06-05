@@ -62,6 +62,7 @@ export const getAll = async (req: Request, res: Response) => {
 
   portfolios = portfolios.map((p: any) => ({
     ...p,
+    id: p._id,
     nickname: p.userId?.nickname || null,
     profileImageUrl: p.userId?.profileImage || null,
   }));
@@ -93,6 +94,7 @@ export const getOne = async (req: Request, res: Response): Promise<void> => {
 
     res.json({
       ...rest,
+      id: portfolio._id,
       userId: user._id,
       nickname: user.nickname,
       profileImageUrl: user.profileImage,
