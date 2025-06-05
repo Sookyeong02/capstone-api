@@ -42,7 +42,7 @@ export const getAll = async (req: Request, res: Response) => {
     .sort(sort === "likes" ? {} : { createdAt: -1 })
     .skip(Number(skip))
     .limit(Number(limit))
-    .populate("userId", "nickname profileImageUrl")
+    .populate("userId", "nickname profileImage")
     .lean<PortfolioResponse[]>();
 
   if (sort === "likes") {
@@ -63,7 +63,7 @@ export const getAll = async (req: Request, res: Response) => {
   portfolios = portfolios.map((p: any) => ({
     ...p,
     nickname: p.userId?.nickname || null,
-    profileImageUrl: p.userId?.profileImageUrl || null,
+    profileImageUrl: p.userId?.profileImage || null,
   }));
 
   res.json({
@@ -80,7 +80,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getOne = async (req: Request, res: Response): Promise<void> => {
   try {
     const portfolio = await Portfolio.findById(req.params.id)
-      .populate("userId", "_id nickname profileImageUrl")
+      .populate("userId", "_id nickname profileImage")
       .lean();
 
     if (!portfolio) {
@@ -95,7 +95,7 @@ export const getOne = async (req: Request, res: Response): Promise<void> => {
       ...rest,
       userId: user._id,
       nickname: user.nickname,
-      profileImageUrl: user.profileImageUrl,
+      profileImageUrl: user.profileImage,
     });
   } catch (err) {
     console.error("포트폴리오 상세 조회 오류:", err);
