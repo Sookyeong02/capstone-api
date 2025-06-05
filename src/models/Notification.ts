@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { applyToJSONTransform } from "../toJSONTransform";
 
 export interface Notification extends Document {
   userId: mongoose.Types.ObjectId;
@@ -16,4 +17,10 @@ const notificationSchema = new Schema<Notification>(
   { timestamps: true }
 );
 
-export default mongoose.model<Notification>("Notification", notificationSchema);
+applyToJSONTransform(notificationSchema);
+
+const Notification = mongoose.model<Notification>(
+  "Notification",
+  notificationSchema
+);
+export default Notification;
