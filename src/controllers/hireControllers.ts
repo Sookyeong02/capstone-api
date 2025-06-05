@@ -4,7 +4,7 @@ import User from "../models/User";
 import { verifyToken } from "../utils/jwt";
 import nodemailer from "nodemailer";
 
-// 발송
+// 포트폴리오 기반
 export const sendHireRequestByPortfolioId = async (
   req: Request,
   res: Response
@@ -66,7 +66,7 @@ export const sendHireRequestByPortfolioId = async (
   }
 };
 
-// 송신
+// 프로필 기반
 export const sendHireRequestByUserId = async (
   req: Request,
   res: Response
